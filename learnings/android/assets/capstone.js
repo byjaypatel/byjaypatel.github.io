@@ -194,9 +194,10 @@
 
     var steps = el("div", "rd-steps");
     steps.innerHTML =
-      '<div class="rd-step"><span class="rd-n">1</span><div><b>Run the script</b>' +
+      '<div class="rd-step"><span class="rd-n">1</span><div><b>Get the script, then run it</b>' +
       '<pre class="rd-pre">sh readiness.sh &gt; my-setup.txt</pre>' +
-      "<span class=\"rd-dim\">It is in labs-offline/ next to this guide. It only reads: adb version, devices, getprop, pm list, settings get, ps, forward --list. No installs, no writes.</span></div></div>" +
+      "<span class=\"rd-dim\"><a href=\"labs/readiness.sh\" download>Download readiness.sh</a> (3 KB, shipped in <code>labs/</code> next to this guide). " +
+      "It only reads: adb version, devices, getprop, pm list, settings get, ps, forward --list. No installs, no writes.</span></div></div>" +
       '<div class="rd-step"><span class="rd-n">2</span><div><b>Paste my-setup.txt below</b>' +
       '<span class="rd-dim">Every line starts with ASW, so the parser is strict on purpose - a hand-edited transcript is not evidence.</span></div></div>' +
       '<div class="rd-step"><span class="rd-n">3</span><div><b>Fix the red, ignore the green</b>' +
