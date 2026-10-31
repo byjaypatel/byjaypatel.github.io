@@ -1,0 +1,79 @@
+/* byjaypatel.github.io - static, no dependencies, no external fonts */
+:root{
+  --bg:#0b0f12; --panel:#11171c; --line:#1e2a31; --ink:#e8eef2; --dim:#93a4ad;
+  --teal:#4fd1c5; --teal-dim:#2b7f78; --maxw:960px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--teal); text-decoration:none; border-bottom:1px solid rgba(79,209,197,.35)}
+a:hover{border-bottom-color:var(--teal)}
+.wrap{max-width:var(--maxw); margin:0 auto; padding:0 24px}
+
+/* top bar */
+.bar{display:flex; align-items:center; justify-content:space-between; gap:16px;
+     padding:22px 0 18px; border-bottom:1px solid var(--line)}
+.bar .who{font-weight:600; letter-spacing:.02em}
+.bar nav{display:flex; gap:18px; font-size:14px}
+.bar nav a{border:0; color:var(--dim)}
+.bar nav a:hover,.bar nav a[aria-current]{color:var(--teal)}
+
+/* hero */
+.hero{display:grid; grid-template-columns:240px 1fr; gap:36px; align-items:start; padding:52px 0 8px}
+.portrait{width:100%; aspect-ratio:3/4; object-fit:cover; border-radius:14px;
+          border:1px solid var(--line); background:var(--panel); display:block}
+h1{margin:0 0 6px; font-size:38px; line-height:1.15; letter-spacing:-.02em; font-weight:650}
+.role{margin:0 0 18px; color:var(--teal); font-size:15px; letter-spacing:.01em}
+.lead{margin:0 0 14px; font-size:19px; line-height:1.5; color:#cfdae0; max-width:52ch}
+.body-text{margin:0; color:var(--dim); max-width:60ch}
+
+/* sections */
+section{padding:34px 0 0}
+h2{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--dim);
+   margin:0 0 16px; font-weight:600}
+.grid{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+.card{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:18px 18px 16px}
+.card h3{margin:0 0 6px; font-size:15px; font-weight:600}
+.card p{margin:0; color:var(--dim); font-size:14.5px; line-height:1.55}
+.rows{list-style:none; margin:0; padding:0; display:grid; gap:11px}
+.rows li{position:relative; padding-left:20px; color:#c6d2d8; max-width:68ch}
+.rows li::before{content:""; position:absolute; left:0; top:.62em; width:8px; height:1px; background:var(--teal-dim)}
+.rows b{color:var(--ink); font-weight:600}
+
+footer{margin-top:56px; padding:22px 0 40px; border-top:1px solid var(--line);
+       color:#6f8089; font-size:13px; display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap}
+
+/* learnings */
+.learn-head{padding:46px 0 4px}
+.learn-head h1{font-size:32px}
+.track{display:grid; grid-template-columns:1fr auto; gap:18px; align-items:start;
+       background:var(--panel); border:1px solid var(--line); border-radius:14px;
+       padding:22px; margin-bottom:14px}
+.track.live{border-color:rgba(79,209,197,.35)}
+.track h3{margin:0 0 6px; font-size:18px; font-weight:620}
+.track p{margin:0; color:var(--dim); font-size:14.5px; max-width:60ch}
+.track .meta{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px}
+.pill{font-size:11.5px; letter-spacing:.04em; color:var(--dim); border:1px solid var(--line);
+      border-radius:999px; padding:3px 9px}
+.pill.on{color:var(--teal); border-color:rgba(79,209,197,.4)}
+.track .go{align-self:center; font-size:14px; white-space:nowrap}
+.soon{color:#6f8089; font-size:12.5px; letter-spacing:.06em; text-transform:uppercase; align-self:center}
+
+/* 404 */
+.nf{padding:90px 0; text-align:center}
+.nf h1{font-size:64px; margin:0 0 10px; color:var(--teal)}
+
+@media (max-width:760px){
+  .hero{grid-template-columns:1fr; gap:22px; padding-top:34px}
+  .portrait{max-width:220px}
+  h1{font-size:31px}
+  .grid{grid-template-columns:1fr}
+  .track{grid-template-columns:1fr}
+  .track .go,.soon{justify-self:start}
+  footer{flex-direction:column}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}

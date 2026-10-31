@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Android Security Workshop - interactive guide</title>
+<link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/arch-vis.css">
+  <link rel="stylesheet" href="assets/method-vis.css">
+  <link rel="stylesheet" href="assets/game.css">
+  <link rel="stylesheet" href="assets/toolkit.css">
+  <link rel="stylesheet" href="assets/spot.css">
+  <link rel="stylesheet" href="assets/reportdesk.css">
+  <link rel="stylesheet" href="assets/motion.css">
+  <link rel="stylesheet" href="assets/lesson-vis.css">
+  <link rel="stylesheet" href="assets/capstone.css">
+  <link rel="stylesheet" href="assets/manifest-lab.css">
+  <link rel="stylesheet" href="assets/sidebar.css">
+  <link rel="stylesheet" href="assets/interlude.css">
+  <link rel="stylesheet" href="assets/visual-system.css">
+</head>
+<body>
+<div id="announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+<div class="layout">
+  <aside id="sidebar">
+    <div class="side-head">
+      <div class="brand">
+        <h1>Android<span>Security</span></h1>
+        <div class="tagline">offline workshop · two days · 51 steps</div>
+      </div>
+      <button class="side-close" id="sideclose" aria-label="close menu">&times;</button>
+    </div>
+
+    <div class="side-status">
+      <div class="progress">
+        <div class="bar"><i></i></div>
+        <div class="meta"><span id="pmeta">0 steps</span><span id="ppct">0%</span></div>
+      </div>
+      <div id="gmhud"></div>
+    </div>
+
+    <nav id="nav" aria-label="sections"></nav>
+
+    <div class="side-foot">
+      <div class="dl">
+        <span class="dl-k">lab apps</span>
+        <a href="https://github.com/RavikumarRamesh/hpAndro1337/releases/download/1.3/com.hpandro.androidsecurity_1.3.apk" target="_blank" rel="noopener" title="download hpAndro 1.3 APK (20.2 MB) - needs internet; the copy in lab-apps/ is identical">hpAndro 1.3</a>
+        <a href="https://github.com/payatu/BugBazaar/releases/download/v1.2.1/BugBazaar_v1.2.1.apk" target="_blank" rel="noopener" title="download BugBazaar v1.2.1 APK (18.6 MB) - the filename says 1.2.1, the manifest says 1.0">BugBazaar 1.2.1</a>
+      </div>
+      <div class="side-actions">
+        <span class="resetwrap" id="resetwrap">
+          <button class="btn ghost" id="reset" title="clear saved progress">reset</button>
+          <button class="btn warn" id="reset-yes" hidden>clear it</button>
+          <button class="btn ghost" id="reset-no" hidden aria-label="cancel">&times;</button>
+        </span>
+        <button class="btn ghost" id="motionbtn" title="motion on / off (m)">motion</button>
+      </div>
+      <div class="tiny">no server · no telemetry · progress lives in this browser</div>
+    </div>
+  </aside>
+
+  <main>
+    <div class="top">
+      <button class="hamb" id="hamb" aria-label="open menu" aria-controls="sidebar">☰</button>
+      <span class="crumb" id="crumb">Overview</span>
+      <span class="spacer"></span>
+      <button class="tbtn tsearch" id="tsearch" title="search everything (ctrl/cmd K)"><kbd>⌘K</kbd><span>search</span></button>
+      <a class="tbtn" href="#/spot">spot</a>
+      <a class="tbtn" href="#/practice">practice</a>
+      <a class="tbtn" href="#/progress">progress</a>
+    </div>
+    <div id="main"></div>
+  </main>
+</div>
+
+<!-- real aapt2 dumps, then content, then the engine -->
+<script src="content/files-manifests.js"></script>
+<script src="content/lessons.js"></script>
+<script src="content/cmdnotes.js"></script>
+<script src="content/manifest-guide.js"></script>
+  <script src="content/manifest-annotated.js"></script>
+  <script src="content/frida-scripts.js"></script>
+  <script src="content/architecture.js"></script>
+  <script src="content/methodology.js"></script>
+  <script src="content/gamify.js"></script>
+  <script src="content/fixes.js"></script>
+  <script src="content/spot.js"></script>
+  <script src="content/lesson-vis.js"></script>
+  <script src="content/doors-game.js"></script>
+  <script src="content/prereqs.js"></script>
+  <script src="content/figs-map.js"></script>
+  <script src="content/fig-details.js"></script>
+  <script src="content/mobsf-report.js"></script>
+  <script src="content/patch-cards.js"></script>
+  <script src="content/match-pairs.js"></script>
+  <script src="content/recall-extra.js"></script>
+  <script src="content/gates.js"></script>
+<script src="content/manifest-learn.js"></script>
+  <script src="content/capstone.js"></script>
+  <script src="assets/method-vis.js"></script>
+  <script src="assets/arch-vis.js"></script>
+  <script src="content/top10.js"></script>
+<script src="content/manifest-source.js"></script>
+<script src="content/findings.js"></script>
+<script src="content/modules-a.js"></script>
+<script src="content/modules-b.js"></script>
+<script src="content/modules-c.js"></script>
+<script src="content/modules-d.js"></script>
+<script src="assets/game.js"></script>
+<script src="assets/toolkit.js"></script>
+<script src="assets/spot.js"></script>
+<script src="assets/reportdesk.js"></script>
+<script src="assets/motion.js"></script>
+<script src="assets/lesson-vis.js"></script>
+<script src="assets/readiness.js"></script>
+<script src="assets/prereqs.js"></script>
+  <script src="assets/capstone.js"></script>
+<script src="assets/doors.js"></script>
+<script src="assets/manifest-tabs.js"></script>
+<script src="assets/manifest-learn.js"></script>
+<script src="assets/top10-match.js"></script>
+  <script src="assets/patch-game.js"></script>
+  <script src="assets/recall.js"></script>
+  <script src="assets/figs.js"></script>
+  <script src="assets/mobsf-report.js"></script>
+  <script src="assets/app.js"></script>
+<script>
+/* Reset asks in place: click once to arm, click again to clear, ignore for 5s and it disarms.
+   No confirm() dialog - it blocks the page, is unstyleable, and reads as a broken app on a projector. */
+(function () {
+  var STORE = "asw-progress-v1";
+  var GAMESTORE = "asw-game-v1";   /* quiz + judgement answers live here - clear both together */
+  var btn = document.getElementById("reset");
+  var yes = document.getElementById("reset-yes");
+  var no = document.getElementById("reset-no");
+  var timer = null;
+
+  function arm(on) {
+    btn.hidden = on;
+    yes.hidden = !on;
+    no.hidden = !on;
+    if (timer) { clearTimeout(timer); timer = null; }
+    if (on) timer = setTimeout(function () { arm(false); }, 5000);
+  }
+  btn.addEventListener("click", function () { arm(true); });
+  no.addEventListener("click", function () { arm(false); });
+  yes.addEventListener("click", function () {
+    try { localStorage.removeItem(STORE); } catch (e) {}
+    try { localStorage.removeItem(GAMESTORE); } catch (e) {}
+    location.reload();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && !yes.hidden) arm(false);
+  });
+})();
+</script>
+</body>
+</html>

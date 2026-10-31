@@ -1,0 +1,191 @@
+/* ============================================================================
+   VISUAL SYSTEM v2 - mission cards, diagrams, one idea per screen.
+   Loaded last so it wins on specificity without !important. Everything inherits
+   the palette in style.css :root, so a theme change repaints every figure too.
+   ========================================================================== */
+
+:root{
+  /* figure palette (derived from the base theme) */
+  --fig-bg:#0a0f14;
+  --fig-grid:#131c24;
+  --fig-box:#141d26;
+  --fig-line:#31465a;
+  --fig-text:#cfe0ec;
+  --fig-sub:#7e97a8;
+  --fig-hot:#3b2a14;
+  --fig-hot-line:#d9a441;
+  --fig-weak:#111820;
+  --fig-edge:#3f5f78;
+
+  /* type scale for cards */
+  --t-kicker:10.5px;
+  --t-lead:16px;
+  --t-body:13.5px;
+  --t-cap:12.5px;
+}
+
+/* ---------- the step, as a card ---------- */
+.step{
+  background:linear-gradient(180deg,#151c26 0%,#121922 100%);
+  border:1px solid #223040;
+  border-radius:14px;
+  margin:0 0 22px;
+  overflow:hidden;
+  scroll-margin-top:64px;
+  box-shadow:0 1px 0 rgba(255,255,255,.02) inset, 0 8px 24px -18px #000;
+}
+.step.done{border-color:#2d4a3a}
+.step-head{
+  display:flex;align-items:center;gap:12px;
+  padding:15px 18px 13px;
+  border-bottom:1px solid #1e2a37;
+  background:linear-gradient(180deg,rgba(79,209,197,.045),transparent);
+}
+.step-head .idx{
+  font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.02em;
+  color:#8ee6d9;background:#0f2027;border:1px solid #2b4a4a;
+  border-radius:9px;padding:5px 9px;min-width:30px;text-align:center;
+}
+.step-head h3{font-size:16.5px;line-height:1.3;letter-spacing:-.01em}
+.step-body{padding:14px 18px 16px}
+
+/* ---------- figure band ---------- */
+.fig{margin:0 0 14px}
+.fig-frame{
+  position:relative;
+  max-height:318px;
+  background:
+    linear-gradient(180deg,rgba(79,209,197,.03),transparent 60%),
+    repeating-linear-gradient(0deg,transparent 0 23px,var(--fig-grid) 23px 24px),
+    repeating-linear-gradient(90deg,transparent 0 23px,var(--fig-grid) 23px 24px),
+    var(--fig-bg);
+  border:1px solid #1d2a36;
+  border-radius:11px;
+  padding:10px 8px;
+  overflow:hidden;
+}
+.fig-svg{display:block;width:100%;height:auto;max-height:300px}
+.fig figcaption{
+  margin:8px 2px 0;
+  font-size:var(--t-cap);line-height:1.5;color:#8ea5b6;
+  max-width:88ch;
+}
+.fig figcaption::before{
+  content:"FIG";font-family:var(--mono);font-size:9px;letter-spacing:.12em;
+  color:#4fd1c5;border:1px solid #2c4a4a;border-radius:4px;padding:1px 5px;margin-right:8px;
+  vertical-align:1px;
+}
+
+/* svg primitives */
+.fig-box{fill:var(--fig-box);stroke:var(--fig-line);stroke-width:1}
+.fig-box.tiny{fill:#101922}
+.fig-box.panel{fill:#0f1720}
+.fig-box.hot{fill:var(--fig-hot);stroke:var(--fig-hot-line)}
+.fig-box.weak{fill:var(--fig-weak);stroke:#26333f;stroke-dasharray:4 3}
+.fig-box.weak .fig-lbl{fill:#7b8b98}
+.fig-t{font-family:var(--mono);fill:var(--fig-text);font-size:12px}
+.fig-lbl{font-family:var(--mono);fill:var(--fig-text);font-size:12px}
+.fig-sub{font-family:var(--mono);fill:var(--fig-sub);font-size:10.5px}
+.fig-note{font-family:var(--mono);fill:#7e97a8;font-size:10.5px;letter-spacing:.02em}
+.fig-edge{stroke:var(--fig-edge);stroke-width:1.4}
+.fig-edge.dash{stroke-dasharray:4 4}
+.fig-head{fill:var(--fig-edge)}
+.fig-edge-t{font-family:var(--mono);fill:#6f8899;font-size:9.5px;letter-spacing:.06em;text-transform:uppercase}
+.fig-vs{font-family:var(--mono);fill:#4a6478;font-size:11px}
+.fig-codeline{fill:transparent}
+.fig-codeline.hot{fill:rgba(217,164,65,.1)}
+.fig-code{font-family:var(--mono);fill:#c8d8e4;font-size:12px}
+.fig-ln{font-family:var(--mono);fill:#405464;font-size:10px}
+.fig-mark{font-family:var(--mono);fill:var(--fig-hot-line);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase}
+
+/* ---------- the one sentence ---------- */
+.step .lead{
+  font-size:var(--t-lead);line-height:1.55;color:#e3eef6;
+  margin:0 0 14px;max-width:74ch;letter-spacing:-.005em;
+}
+
+/* ---------- the do-block gets the weight ---------- */
+.cmdbox{margin:13px 0}
+.cmdbox pre{font-size:13px;line-height:1.55}
+.gate{margin:13px 0}
+
+/* ---------- terminal ---------- */
+.term{margin:12px 0}
+
+/* ---------- the detail deck ---------- */
+.deep{
+  margin-top:14px;border-top:1px dashed #24313d;padding-top:2px;
+}
+.deep > summary{
+  cursor:pointer;list-style:none;
+  font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+  color:#7b93a4;padding:9px 0 7px;
+}
+.deep > summary::-webkit-details-marker{display:none}
+.deep > summary::before{content:"▸ ";color:#4fd1c5}
+.deep[open] > summary::before{content:"▾ "}
+.deep > summary:hover{color:#bfe8e2}
+.deepin{padding:2px 0 4px}
+.deepin .fold{margin:8px 0}
+.deepin .goal{margin:8px 0}
+
+/* existing folds inside the deck get quieter */
+.deep .fold > summary{font-size:11.5px;color:#8fa7b8}
+.deep .fold .foldin{font-size:var(--t-body);line-height:1.62;color:#b9c8d4}
+
+/* expect block stays visible: it is the check */
+.expect{margin-top:10px}
+.trap{margin-top:10px}
+
+/* ---------- module header, tightened ---------- */
+.mod{font-size:26px;line-height:1.2;letter-spacing:-.02em;margin:0 0 6px}
+.modgoal{font-size:15px;line-height:1.6;color:#a9bcc9;max-width:78ch;margin:0 0 16px}
+
+/* ---------- mobile ---------- */
+@media (max-width:700px){
+  .step-head{padding:13px 13px 11px;gap:9px}
+  .step-head h3{font-size:15px}
+  .step-body{padding:13px 13px 15px}
+  .step .lead{font-size:15px;margin-bottom:12px}
+  /* a diagram that scales to 296px wide renders its 12px labels at 5px: illegible.
+     Keep the drawing at reading scale and let the frame scroll sideways instead. */
+  .fig-frame{padding:6px 4px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .fig-svg{min-width:640px;max-height:none}
+  .fig::after{content:"\2190  swipe the diagram  \2192";display:block;margin-top:4px;
+    font-family:var(--mono);font-size:10px;letter-spacing:.05em;color:#4f6b7d;text-align:right}
+  .fig figcaption{font-size:12px}
+}
+
+/* ---------- print: no folds, no shadows ---------- */
+@media print{
+  .step{box-shadow:none;break-inside:avoid;border-color:#ccc}
+  .fig-frame{background:#fff;border-color:#ccc}
+  .fig-box{fill:#fff;stroke:#555}
+  .fig-box.hot{fill:#fdf3e0;stroke:#a97b18}
+  .fig-lbl,.fig-code{fill:#111}
+  .fig-sub,.fig-note,.fig-edge-t{fill:#555}
+  .deep, .deep[open]{display:block}
+  .deep > summary{color:#333}
+}
+
+
+/* ---------- clickable diagram nodes ---------- */
+.fig-box[data-i], .fig-codeline[data-i]{cursor:pointer;transition:stroke .12s,fill .12s}
+.fig-box[data-i]:hover, .fig-box[data-i]:focus-visible{stroke:#4fd1c5;stroke-width:1.8;outline:none}
+.fig-box[data-i].sel{stroke:#4fd1c5;stroke-width:2}
+.fig-codeline[data-i]:hover, .fig-codeline[data-i]:focus-visible{fill:rgba(79,209,197,.10);outline:none}
+.fig-codeline[data-i].sel{fill:rgba(79,209,197,.14)}
+.fig-hint{font-family:var(--mono);font-size:10.5px;letter-spacing:.03em;color:#5f7b8d;margin:6px 2px 0}
+.fig-hint::before{content:"\25B8 ";color:#4fd1c5}
+.fig-read{border:1px solid #2b4a4a;border-radius:10px;background:#0f1a20;margin-top:10px;padding:12px 14px}
+.fr-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:7px}
+.fr-k{font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:#7fe3d7}
+.fr-x{background:none;border:0;color:#7b93a4;font-size:20px;line-height:1;cursor:pointer;padding:0 4px;margin-top:-3px}
+.fr-x:hover{color:#fff}
+.fr-w{margin:0 0 9px;font-size:13.5px;line-height:1.6;color:#dfeaf2}
+.fr-y,.fr-s{margin:0 0 7px;font-size:13px;line-height:1.55;color:#b9c8d4}
+.fr-y .lbl,.fr-s .lbl{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:#7d94a3;margin-bottom:2px}
+.fr-s{color:#dfc07a}
+.fr-s .lbl{color:#a8823c}
+@media print{ .fig-hint,.fig-read{display:none} }

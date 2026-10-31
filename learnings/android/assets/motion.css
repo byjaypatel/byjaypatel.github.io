@@ -1,0 +1,103 @@
+/* Motion: keyframes and micro-transitions. Everything here is additive - html.no-motion disables all of it. */
+
+:root{
+  --e-out:cubic-bezier(0,0,.2,1);
+  --e-in:cubic-bezier(.4,0,1,1);
+  --e-spring:cubic-bezier(.2,.8,.3,1);
+}
+
+/* ---------- step tick ---------- */
+.step .tick{transition:transform .16s var(--e-spring),background .16s,border-color .16s}
+.step .tick:active{transform:scale(.86)}
+.step.done .tick{animation:tickLand .34s var(--e-spring)}
+@keyframes tickLand{
+  0%{transform:scale(.6);}
+  55%{transform:scale(1.22);}
+  100%{transform:scale(1);}
+}
+.step.done{animation:stepSettle .34s var(--e-out)}
+@keyframes stepSettle{
+  0%{box-shadow:inset 0 0 0 1px rgba(79,209,197,.35)}
+  100%{box-shadow:inset 0 0 0 1px rgba(79,209,197,0)}
+}
+
+/* ---------- xp fly-up ---------- */
+.xp-fly{position:fixed;z-index:140;font-family:var(--mono);font-size:11.5px;color:var(--accent2);
+  pointer-events:none;padding:2px 6px;border-radius:4px;background:#0b1a1f;border:1px solid #24505a;
+  will-change:transform,opacity}
+
+/* ---------- palette ---------- */
+.pal-box{animation:palIn .16s var(--e-out)}
+@keyframes palIn{from{opacity:0;transform:translateY(-8px) scale(.985)}to{opacity:1;transform:none}}
+.pal-hit{animation:palRow .18s var(--e-out) both}
+.pal-hit:nth-child(1){animation-delay:0ms}
+.pal-hit:nth-child(2){animation-delay:12ms}
+.pal-hit:nth-child(3){animation-delay:24ms}
+.pal-hit:nth-child(4){animation-delay:36ms}
+.pal-hit:nth-child(5){animation-delay:48ms}
+.pal-hit:nth-child(n+6){animation-delay:60ms}
+@keyframes palRow{from{opacity:0;transform:translateX(-4px)}to{opacity:1;transform:none}}
+
+/* ---------- help overlay ---------- */
+.helpbox{animation:palIn .15s var(--e-out)}
+
+/* ---------- quiz / scenario options ---------- */
+.gm-opt{transition:border-color .15s,background .15s,transform .12s}
+.gm-opt:active:not(:disabled){transform:scale(.995)}
+.gm-opt.right{animation:popOk .3s var(--e-spring)}
+.gm-opt.wrong{animation:shake .28s linear}
+@keyframes popOk{0%{transform:scale(.99)}50%{transform:scale(1.012)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-3px)}40%{transform:translateX(3px)}60%{transform:translateX(-2px)}80%{transform:translateX(2px)}}
+.gm-fb{animation:fbIn .2s var(--e-out)}
+@keyframes fbIn{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
+
+/* ---------- spot the flaw ---------- */
+.spot-line{transition:background .12s,border-color .12s}
+.spot-line.sel{animation:selPulse .24s var(--e-spring)}
+@keyframes selPulse{0%{transform:none}50%{transform:translateX(2px)}100%{transform:none}}
+.spot-line.right{animation:popOk .32s var(--e-spring)}
+.spot-line.wrong{animation:shake .28s linear}
+.spot-verdict,.spot-why,.spot-lesson{animation:fbIn .22s var(--e-out) both}
+.spot-why:nth-child(2){animation-delay:40ms}
+.spot-why:nth-child(3){animation-delay:80ms}
+.spot-check:active{transform:scale(.98)}
+
+/* ---------- report desk ---------- */
+.rp-chip{transition:background .14s,border-color .14s,color .14s,transform .12s}
+.rp-chip:active{transform:scale(.96)}
+.rp-chip.on{animation:chipOn .26s var(--e-spring)}
+@keyframes chipOn{0%{transform:scale(.94)}60%{transform:scale(1.04)}100%{transform:scale(1)}}
+.rp-res{animation:fbIn .2s var(--e-out)}
+.rp-num b{transition:color .2s}
+
+/* ---------- module chrome ---------- */
+.modbar i{transition:width .45s var(--e-out)}
+#gmhud .gm-hudbar i{transition:width .5s var(--e-out)}
+.gm-badge.got{animation:badgeIn .34s var(--e-spring)}
+@keyframes badgeIn{0%{transform:translateY(3px);opacity:.6}100%{transform:none;opacity:1}}
+.steptrail a{transition:color .15s,background .15s,border-color .15s,transform .15s}
+.steptrail a.on{transform:scale(1.12)}
+
+/* ---------- resume card nudge ---------- */
+.resume .rz-go{display:inline-block;transition:transform .18s var(--e-out)}
+.resume:hover .rz-go{transform:translateX(4px)}
+
+/* ---------- copy buttons ---------- */
+.mini,button[data-copy],button[data-run]{transition:border-color .14s,color .14s,transform .1s}
+.mini:active,button[data-copy]:active,button[data-run]:active{transform:scale(.96)}
+button[data-copy].did,button[data-run].did{border-color:var(--ok);color:var(--ok)}
+
+/* ---------- card entry on list pages ---------- */
+.ocard,.scard,.rp-card,.spot{animation:cardIn .22s var(--e-out) both}
+@keyframes cardIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* re-rendered lists must not replay the entrance animation (the report desk re-renders on every grade) */
+.rp-re .rp-card{animation:none}
+
+/* ---------- the switch ---------- */
+html.no-motion *,html.no-motion *:before,html.no-motion *:after{
+  animation-duration:0s!important;animation-delay:0s!important;transition-duration:0s!important;
+}
+@media (prefers-reduced-motion:reduce){
+  *,*:before,*:after{animation-duration:0s!important;animation-delay:0s!important;transition-duration:0s!important}
+}
