@@ -70,6 +70,38 @@
     var m = el("pmeta"); if (m) m.textContent = d + " / " + total + " steps";
     var p = el("ppct"); if (p) p.textContent = pct + "%";
     if (typeof paintNavCounts === "function") paintNavCounts();
+    if (typeof paintSpine === "function") paintSpine();
+    if (typeof paintTopProg === "function") paintTopProg();
+  }
+
+  /* the seven-module spine: one glance tells you where you are in the course */
+  function paintSpine() {
+    var host = el("spine");
+    if (!host) return;
+    var firstOpen = null;
+    MODULES.forEach(function (m) {
+      if (firstOpen) return;
+      var tot = (m.steps || []).length, dn = 0;
+      (m.steps || []).forEach(function (s) { if (isDone(m.id, s.id)) dn++; });
+      if (dn < tot) firstOpen = m.id;
+    });
+    host.innerHTML = MODULES.map(function (m, i) {
+      var tot = (m.steps || []).length, dn = 0;
+      (m.steps || []).forEach(function (s) { if (isDone(m.id, s.id)) dn++; });
+      var cls = "sp" + (tot && dn === tot ? " done" : "") + (m.id === firstOpen ? " now" : "");
+      return '<a class="' + cls + '" href="#/' + m.id + '" title="' + esc(m.title) + ' \u2014 ' + dn + "/" + tot + ' steps">' +
+        '<i>' + String(i).padStart(2, "0") + '</i>' +
+        '<b><s style="width:' + (tot ? Math.round(dn / tot * 100) : 0) + '%"></s></b></a>';
+    }).join("");
+  }
+
+  /* the same number in the top bar, so it is visible while you are ticking boxes */
+  function paintTopProg() {
+    var total = allSteps().length, d = 0;
+    allSteps().forEach(function (x) { if (isDone(x.m.id, x.s.id)) d++; });
+    var n = el("tpnum"); if (n) n.textContent = d + " / " + total;
+    var b = document.querySelector("#topprog .tp-bar i");
+    if (b) b.style.width = (total ? Math.round(d / total * 100) : 0) + "%";
   }
 
   /* ---------------------------------------------------------------- sidebar */
@@ -278,110 +310,108 @@
   /* ---------------------------------------------------------------- home */
   function viewHome() {
     var total = allSteps().length;
-    var html = '<div class="wrap"><div class="hero">' +
-      '<h1>Android Security Workshop</h1>' +
-      '<p>Follow-along guide for the hands-on sessions. Every command here was run against the ' +
-      'shipped builds of <b>hpAndro 1.3</b> and <b>BugBazaar 1.2.1</b>; the outputs you see when ' +
-      'you press <b>Run</b> are the real ones. No server, no backend \u2014 your machine and your ' +
-      'device only.</p>' +
-      '<p class="mono" style="color:var(--dim);font-size:12.5px">' + total + ' steps \u00b7 progress is saved in this browser \u00b7 ' +
-      '<kbd>j</kbd>/<kbd>k</kbd> move between steps, <kbd>g</kbd> then <kbd>h</kbd> goes home</p>' +
-      '</div>' + (function () {
-        var f = window.Figs ? window.Figs.get("home/map") : null;
-        if (!f) return "";
-        return '<figure class="fig hero-fig" data-key="home/map"><div class="fig-frame">' + f.svg + '</div>' +
-               '<figcaption>' + esc(f.caption) + '</figcaption>' +
-               '<div class="fig-hint">click a box \u2014 what it does, why it is needed, what breaks without it</div>' +
-               '<div class="fig-read" hidden></div></figure>';
-      })() + '<div class="cards">';
+    var doneAll = 0;
+    allSteps().forEach(function (x) { if (isDone(x.m.id, x.s.id)) doneAll++; });
+    var firstOpen = null;
     MODULES.forEach(function (m) {
+      if (firstOpen) return;
       var tot = (m.steps || []).length, dn = 0;
       (m.steps || []).forEach(function (s) { if (isDone(m.id, s.id)) dn++; });
-      html += '<div class="card" data-go="' + m.id + '"><div class="k">' + esc(m.tag || "MODULE") + '</div>' +
-              '<h3>' + esc(m.title) + '</h3><p>' + esc(m.goal) + '</p>' +
-              '<div class="count">' + dn + " / " + tot + ' \u00b7 ' + esc(m.time || "") + '</div></div>';
+      if (dn < tot) firstOpen = m;
     });
-    html += '</div>';
+    var f = window.Figs ? window.Figs.get("home/map") : null;
 
-    /* the two orientation pages, visible on the front page and not only in the top bar */
-    html += '<div class="orient">' +
-      '<a class="ocard" href="#/method"><span class="ok">Read first</span><b>Android pentest methodology</b>' +
-      '<span class="op">Eight doors, in the order that pays - what to do in each phase, what evidence to leave with, ' +
-      'and where a finding stops being one.</span></a>' +
-      '<a class="ocard" href="#/arch"><span class="ok">Reference</span><b>Android architecture</b>' +
-      '<span class="op">The five layers, zygote, Binder and the sandbox - each with the command that proves it on ' +
-      'the device, and the module where you meet it.</span></a>' +
-      '<a class="ocard" href="#/fixes"><span class="ok">When stuck</span><b>When it does not work</b>' +
-      '<span class="op">25 failures that actually happened in these labs - symptom, cause, exact fix. ' +
-      'Filter it by what you saw on screen.</span></a>' +
-      '<a class="ocard" href="#/spot"><span class="ok">Read an artifact</span><b>Spot the flaw</b>' +
-      '<span class="op">Eight real files and transcripts - a manifest, some smali, a prefs file, a terminal log. ' +
-      'Click the line that carries the finding.</span></a>' +
-      '<a class="ocard" href="#/report"><span class="ok">The capstone</span><b>Report desk</b>' +
-      '<span class="op">Twenty real findings with their evidence and no severity. Decide what each one is worth, ' +
-      'what does not belong in a report, and leave with the document.</span></a>' +
-      '<a class="ocard" href="#/practice"><span class="ok">Check yourself</span><b>Practice</b>' +
-      '<span class="op">20 questions and 8 judgement calls, with the reasoning behind every option - ' +
-      'including why the tempting answer gets marked down.</span></a>' +
+    var html = '<div class="wrap homev3">' +
+
+      /* ---------- one screen of orientation, nothing else ---------- */
+      '<header class="hv-hero">' +
+        '<div class="hv-k">seven modules \u00b7 two apps</div>' +
+        '<h1>Android Security Workshop</h1>' +
+        '<p class="hv-lead">Seven modules from a clean laptop to a written, defensible finding. ' +
+          'Every command was run against the shipped builds of <b>hpAndro 1.3</b> and <b>BugBazaar 1.2.1</b> — ' +
+          'what you read when you press <b>Run</b> is the real transcript.</p>' +
+        '<div class="hv-stats"><span><b>7</b> modules</span><span><b>' + total + '</b> steps</span>' +
+          '<span><b>43</b> gates</span><span><b>0</b> servers</span></div>' +
+        '<div class="hv-cta">' +
+          (firstOpen
+            ? '<a class="btn primary" href="#/' + firstOpen.id + '">' +
+              (doneAll ? 'Continue · ' : 'Start here · ') + esc(firstOpen.tag) + ' →</a>'
+            : '<a class="btn primary" href="#/m0">Start at Module 00 →</a>') +
+          '<a class="btn" href="#/check">Check my machine</a>' +
+          '<a class="btn ghost" href="#/method">The method</a>' +
+        '</div>' +
+        '<div class="hv-prog"><span class="hv-pb"><i style="width:' + (total ? Math.round(doneAll / total * 100) : 0) + '%"></i></span>' +
+          '<span class="hv-pn">' + doneAll + ' of ' + total + ' steps done' +
+          (window.Game ? ' · ' + window.Game.stats().total + ' xp' : '') + '</span></div>' +
+      '</header>' +
+
+      /* ---------- the path: the only list on this page ---------- */
+      '<section class="hv-path">' +
+        '<div class="hv-h"><h2>The path</h2><span>in order — each module assumes the one before it</span></div>' +
+        '<ol class="pmap">';
+
+    MODULES.forEach(function (m, i) {
+      var tot = (m.steps || []).length, dn = 0;
+      (m.steps || []).forEach(function (s) { if (isDone(m.id, s.id)) dn++; });
+      var st = (tot && dn === tot) ? "done" : (m === firstOpen ? "now" : "todo");
+      var note = st === "done" ? "done" : (st === "now" ? (dn ? "continue" : "start here") : "");
+      html += '<li class="prow ' + st + '"><a href="#/' + m.id + '">' +
+        '<span class="pn">' + String(i).padStart(2, "0") + '</span>' +
+        '<span class="pt"><b>' + esc(m.title) + '</b><em>' + esc(m.goal || "") + '</em></span>' +
+        '<span class="pm"><span class="pc">' + dn + "/" + tot + ' steps</span><span class="px">' + esc(m.time || "") + '</span></span>' +
+        (note ? '<span class="pnote">' + note + '</span>' : '') +
+        '</a></li>';
+    });
+
+    html += '</ol></section>' +
+
+      /* ---------- everything that is not the path, in two short lists ---------- */
+      '<section class="hv-two">' +
+        '<div class="hv-col"><h3>Before you start</h3>' +
+          '<a href="#/check"><b>Readiness check</b><span>grade your machine against a real transcript</span></a>' +
+          '<a href="#/method"><b>Methodology</b><span>the eight doors, in the order that pays</span></a>' +
+          '<a href="#/arch"><b>Architecture</b><span>layers, zygote, Binder, the sandbox</span></a>' +
+        '</div>' +
+        '<div class="hv-col"><h3>Practice and wrap-up</h3>' +
+          '<a href="#/spot"><b>Spot the flaw</b><span>eight real artifacts, click the line that matters</span></a>' +
+          '<a href="#/report"><b>Report desk</b><span>twenty findings, decide what each is worth</span></a>' +
+          '<a href="#/capstone"><b>Capstone</b><span>one flag per module</span></a>' +
+          '<a href="#/practice"><b>Knowledge check</b><span>questions and judgement calls</span></a>' +
+        '</div>' +
+      '</section>' +
+
+      /* ---------- the prose, folded: available, never in the way ---------- */
+      '<details class="hv-fold"><summary>How to read this guide · what you need · the four layers</summary>' +
+        '<div class="hv-foldbody">' +
+          '<h4>Every page is built in four layers</h4><ul>' +
+            '<li><b>Lesson</b> — the idea and the mental model, before any command. Read it once; it is what makes the commands make sense.</li>' +
+            '<li><b>The idea</b> — one paragraph on what this particular step is testing.</li>' +
+            '<li><b>The command</b> — copy it and run it yourself. The <b>Run</b> button replays the recorded output.</li>' +
+            '<li><b>What you are looking at</b> and <b>what success looks like</b> — how to read the output, and the line that tells you it worked.</li>' +
+          '</ul>' +
+          '<h4>What you need</h4><p>A laptop with the Android SDK, an emulator (API 30\\u201334, <code>google_apis</code>) or a rooted test phone, ' +
+            'and the two APKs in <code>lab-apps/</code>. Module 00 walks through all of it, including the PATH that makes the other modules work.</p>' +
+          '<h4>Where the modules go</h4><ul>' +
+            '<li><b>00 Setup</b> — device, ADB, root, install. Nothing else works until this does.</li>' +
+            '<li><b>01 Static</b> — the APK as an artifact: manifest, code, secrets, smali.</li>' +
+            '<li><b>02 Components</b> — the doors other apps can knock on, and the locks that are missing.</li>' +
+            '<li><b>03 Frida</b> — the app at runtime: observe a check, then change its answer.</li>' +
+            '<li><b>04 Traffic</b> — what leaves the device, and why your proxy sometimes sees nothing.</li>' +
+            '<li><b>05 Repackage</b> — patch smali, rebuild, re-sign, reinstall, and prove the change.</li>' +
+            '<li><b>06 Automation</b> — scan, verify the alerts, then write what you can defend.</li>' +
+          '</ul>' +
+          '<p class="hv-keys"><kbd>j</kbd>/<kbd>k</kbd> move between steps · <kbd>g</kbd> then <kbd>h</kbd> goes home · progress is saved in this browser</p>' +
+          (f ? '<figure class="fig hero-fig" data-key="home/map"><div class="fig-frame">' + f.svg + '</div>' +
+               '<figcaption>' + esc(f.caption) + '</figcaption>' +
+               '<div class="fig-hint">click a box — what it does, why it is needed, what breaks without it</div>' +
+               '<div class="fig-read" hidden></div></figure>' : '') +
+        '</div></details>' +
+
       '</div>';
-
-    /* resume: the one thing a student needs on entering - where they stopped */
-    (function () {
-      var nextM = null, nextS = null, nextI = -1;
-      for (var mi = 0; mi < MODULES.length && !nextS; mi++) {
-        var mm = MODULES[mi];
-        for (var si = 0; si < (mm.steps || []).length; si++) {
-          if (!isDone(mm.id, mm.steps[si].id)) { nextM = mm; nextS = mm.steps[si]; nextI = si; break; }
-        }
-      }
-      if (nextM) {
-        var doneInMod = (nextM.steps || []).filter(function (x) { return isDone(nextM.id, x.id); }).length;
-        html += '<a class="resume" href="#/' + nextM.id + '/' + nextS.id + '">' +
-          '<span class="rz-k">Continue where you stopped</span>' +
-          '<span class="rz-t">' + esc(nextM.tag) + ' \u00b7 step ' + String(nextI + 1).padStart(2, "0") + ' \u2014 ' + esc(nextS.title) + '</span>' +
-          '<span class="rz-d">' + doneInMod + ' of ' + (nextM.steps || []).length + ' done in this module' +
-          (window.Game ? ' \u00b7 ' + window.Game.stats().total + ' xp so far' : '') + '</span>' +
-          '<span class="rz-go">go \u2192</span></a>';
-      } else if (Object.keys(state.done).length) {
-        html += '<div class="resume done"><span class="rz-k">All steps done</span>' +
-          '<span class="rz-t">Every step in the guide is ticked.</span>' +
-          '<span class="rz-d">Export the record from <a href="#/progress">your progress</a>, then write it up.</span></div>';
-      }
-    })();
-
-    html += '<section class="lesson intro"><div class="lesson-head"><span class="tagx">Start here</span>' +
-      '<h3>What this material is, and how to read it</h3></div>' +
-      '<p>A two-day, hands-on introduction to assessing Android apps. Every command in here was run against the two ' +
-      'APKs in <code>lab-apps/</code>; when you press <b>Run</b> you are reading a real transcript, not an invented one. ' +
-      'Nothing needs a server or a network.</p>' +
-      '<h4>Every page is built in the same four layers</h4><ul>' +
-      '<li><b>Lesson</b> - the idea and the mental model, before any command. Read it once; it is what makes the commands make sense.</li>' +
-      '<li><b>The idea</b> - one paragraph on what this particular step is testing.</li>' +
-      '<li><b>The command</b> - copy it and run it yourself. The <b>Run</b> button replays the recorded output.</li>' +
-      '<li><b>What you are looking at</b> and <b>what success looks like</b> - how to read the output, and the line that tells you it worked.</li>' +
-      '</ul>' +
-      '<h4>What you need</h4><p>A laptop with the Android SDK, an emulator (API 30-34, <code>google_apis</code>) or a rooted test phone, and the two APKs. ' +
-      'Module 0 walks through all of it, including the PATH that makes the other modules work.</p>' +
-      '<h4>The path</h4><ul>' +
-      '<li><b>00 Setup</b> - device, ADB, root, install. Nothing else works until this does.</li>' +
-      '<li><b>01 Static</b> - the APK as an artifact: manifest, code, secrets, smali.</li>' +
-      '<li><b>03 Frida</b> - the app at runtime: observe a check, then change its answer.</li>' +
-      '<li><b>03 Components</b> - the doors other apps can knock on, and the locks that are missing.</li>' +
-      '<li><b>04 Traffic</b> - what leaves the device, and why your proxy sometimes sees nothing.</li>' +
-      '<li><b>05 Repackage</b> - patch smali, rebuild, re-sign, reinstall, and prove the change.</li>' +
-      '<li><b>06 Automation</b> - scan, verify the alerts, then write what you can defend.</li>' +
-      '</ul>' +
-      '<p class="introcta"><a class="btn" href="#/where">Where to look - the methodology map \u2192</a> ' +
-      '<a class="btn ghost" href="#/m1/manifest">Manifest explorer \u2192</a></p>' +
-      '</section></div>';
 
     el("main").innerHTML = html;
     wireFigures();
-    foldSection('.lesson.intro', 'what this material is \u00b7 what you need \u00b7 the path');
     if (window.Motion) window.Motion.routeIn(document.getElementById("main"));
-    Array.prototype.forEach.call(document.querySelectorAll(".card"), function (c) {
-      c.onclick = function () { location.hash = "#/" + c.dataset.go; };
-    });
   }
 
   /* ---------------------------------------------------------------- manifest explorer */
@@ -1329,9 +1359,10 @@
         save(); sec.classList.toggle("done", on); refreshProgress();
         tick.setAttribute("aria-pressed", on ? "true" : "false");
         tick.setAttribute("aria-label", on ? "mark this step not done" : "mark this step done");
-        announce(on ? "step marked done, plus 10 xp" : "step marked not done");
+        announce(on ? "step marked done, plus 10 xp" : "step marked not done, minus 10 xp");
         if (window.Game) window.Game.onStep(m.id, sid, on);
-        if (on && window.Motion) window.Motion.flyXP(tick, "+10 xp");
+        /* show both directions: an untick that silently kept the old total would be a scoring bug */
+        if (window.Motion) window.Motion.flyXP(tick, on ? "+10 xp" : "\u221210 xp");
         /* keep the module bar and the step rail honest without a re-render */
         paintModHead(m);
         paintNavCounts();
@@ -1415,6 +1446,14 @@
     if (window.LessonVis) window.LessonVis.destroy();
     var h = (location.hash || "#/home").replace(/^#\/?/, "");
     var parts = h.split("/");
+
+    /* The views live in <div id="main"> but the page actually scrolls in the <main> element around it,
+       so resetting el("main") never moved anything and a next-page click left you at the bottom.
+       Reset the real scroller here, BEFORE rendering: a link that targets one step still scrolls to it. */
+    var pageScroller = document.querySelector("main");
+    if (pageScroller) pageScroller.scrollTop = 0;
+    try { window.scrollTo(0, 0); } catch (e) {}
+
     if (!h || h === "home") { viewHome(); setCrumb("Overview"); }
     else if (parts[0] === "where") { viewWhere(); setCrumb("Where to look"); }
     else if (parts[0] === "top10") { viewTop10(); setCrumb("OWASP Mobile Top 10"); }
@@ -1450,7 +1489,7 @@
       var key = a.dataset.mod || "";
       a.classList.toggle("active", key === activeKey || href === "#/" + h);
     });
-    el("main").scrollTop = 0;
+    /* the scroll reset happens before the render now - see the top of route() */
     /* the route swap replaces innerHTML, which drops focus to <body>; put it back on the new
        heading so a keyboard user lands where the page changed, and say the page name out loud */
     var head = document.querySelector('#main h2.mod, #main h1, #main h2');
@@ -1489,6 +1528,9 @@
   document.addEventListener("DOMContentLoaded", function () {
     renderNav();
     wireSidebar();
+    /* hash routing replaces the view in place; a browser "restore last scroll position" would drop the
+       student at the bottom of the page they just opened, so we own the scroll position ourselves */
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
     if (window.Game) window.Game.bootstrap(function () { return Object.keys(state.done); }); route();
   });
 })();

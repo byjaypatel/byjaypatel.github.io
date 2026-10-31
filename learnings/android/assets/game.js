@@ -37,6 +37,9 @@
 
   /* ------------------------------------------------------------------ maths */
   function counts() {
+    /* always re-derive from the live guide state: a tick, an untick, a reset or an import must never
+       leave the score showing a number the steps no longer add up to */
+    if (getter) doneKeys = getter() || [];
     var d = doneKeys.filter(function (k) { return k.indexOf("/") > 0; });
     return {
       steps: d.length,

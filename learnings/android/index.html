@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="assets/sidebar.css">
   <link rel="stylesheet" href="assets/interlude.css">
   <link rel="stylesheet" href="assets/visual-system.css">
+  <link rel="stylesheet" href="assets/revamp.css">
 </head>
 <body>
 <div id="announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
@@ -26,7 +27,7 @@
     <div class="side-head">
       <div class="brand">
         <h1>Android<span>Security</span></h1>
-        <div class="tagline">offline workshop · two days · 51 steps</div>
+        <div class="tagline">51 steps · 7 modules</div>
       </div>
       <button class="side-close" id="sideclose" aria-label="close menu">&times;</button>
     </div>
@@ -36,6 +37,7 @@
         <div class="bar"><i></i></div>
         <div class="meta"><span id="pmeta">0 steps</span><span id="ppct">0%</span></div>
       </div>
+      <div id="spine" class="spine" aria-label="module progress"></div>
       <div id="gmhud"></div>
     </div>
 
@@ -64,10 +66,10 @@
       <button class="hamb" id="hamb" aria-label="open menu" aria-controls="sidebar">☰</button>
       <span class="crumb" id="crumb">Overview</span>
       <span class="spacer"></span>
+      <a class="top-prog" id="topprog" href="#/progress" title="your progress">
+        <span class="tp-bar"><i></i></span><span class="tp-num" id="tpnum">0 / 51</span>
+      </a>
       <button class="tbtn tsearch" id="tsearch" title="search everything (ctrl/cmd K)"><kbd>⌘K</kbd><span>search</span></button>
-      <a class="tbtn" href="#/spot">spot</a>
-      <a class="tbtn" href="#/practice">practice</a>
-      <a class="tbtn" href="#/progress">progress</a>
     </div>
     <div id="main"></div>
   </main>
