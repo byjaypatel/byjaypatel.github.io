@@ -34,7 +34,7 @@ window.MOBSF_REPORT = {
 
   /* why the PDF row is empty for one app - a real tool failure, shown rather than hidden */
   pdfNote:
-    "MobSF's PDF export works for hpAndro (5 pages, exported cleanly) and fails for BugBazaar with an " +
+    "MobSF's PDF export works for hpAndro (5 pages, included) and fails for BugBazaar with an " +
     "xhtml2pdf layout error while splitting a table on page 36. That is the tool's bug, not the report's - " +
     "the JSON is complete. Real engagements meet this: when the pretty export dies, the data is still there.",
 

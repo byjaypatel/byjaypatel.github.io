@@ -1,5 +1,3 @@
-/* published copy: scan artifacts are not hosted here */
-window.MOBSF_ARTIFACTS = false;
 /* Renders the real MobSF run: two score cards, the artifact table, the claims you have to read
    line by line, and what the scanner never said. Mounted at the bottom of Module 06.
    Unscored on purpose - it is the reading exercise that makes the scored triage on #/report mean something. */
@@ -51,20 +49,14 @@ window.MOBSF_ARTIFACTS = false;
     /* ---- artifacts ---- */
     var arts = el("section", "msr-arts");
     arts.appendChild(el("h3", "gm-h3", "The artifacts, as recorded"));
-    var offline = window.MOBSF_ARTIFACTS === false;
     var rows = R.scans.map(function (s) {
-      var json = offline
-        ? "<span class='msr-dl off'>report JSON - offline edition</span>"
-        : "<a class='msr-dl' href='labs/reports/" + esc(s.file) + "' target='_blank' rel='noopener'>report JSON ↗</a>";
       var pdf = s.pdf
-        ? (offline
-            ? "<span class='msr-dl off'>PDF - offline edition</span>"
-            : "<a class='msr-dl' href='labs/reports/" + esc(s.pdf) + "' target='_blank' rel='noopener'>open the PDF ↗</a>")
+        ? "<a class='msr-dl' href='labs/reports/" + esc(s.pdf) + "' target='_blank' rel='noopener'>open the PDF ↗</a>"
         : "<span class='msr-dl off'>PDF export failed - see note</span>";
-      return "<div class='msr-row'><b>" + esc(s.app) + "</b>" + json + pdf + "</div>";
+      return "<div class='msr-row'><b>" + esc(s.app) + "</b>" +
+        "<a class='msr-dl' href='labs/reports/" + esc(s.file) + "' target='_blank' rel='noopener'>report JSON ↗</a>" + pdf + "</div>";
     }).join("");
-    arts.innerHTML = rows + "<p class='msr-note'>" + esc(R.pdfNote) + "</p>" +
-      (offline ? "<p class='msr-note'>Both reports and the exported PDF ship with the offline edition of this workshop; they are not published on this site.</p>" : "");
+    arts.innerHTML = rows + "<p class='msr-note'>" + esc(R.pdfNote) + "</p>";
     host.appendChild(arts);
 
     /* ---- claims: read the line, then say what it lets someone do ---- */
